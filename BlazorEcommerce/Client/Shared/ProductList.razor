@@ -21,9 +21,7 @@ else
 						<h4 class="mb-0">@p.Title</h4>
 					</a>
 					<p>@p.Description</p>
-					<h5 class="price">$@p.Price</h5>
-					<p>Category: </p>
-					
+					<h5 class="price">@GetPriceText(p)</h5>					
 				</div>
 			</li>
 		}
@@ -38,5 +36,20 @@ else
 	public void Dispose()
 	{
 		ProductService.ProductsChanged -= StateHasChanged;
+	}
+
+	private string GetPriceText(Product product)
+	{
+		var variants = product.Variants;
+		if (variants.Count == 0)
+		{
+			return string.Empty;
+		}
+		else if (variants.Count == 1)
+		{
+			return $"${variants[0].Price}";
+		}
+		decimal minPrice = variants.Min(v => v.Price);
+		return $"Starting at ${minPrice}";
 	}
 }
