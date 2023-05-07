@@ -21,7 +21,19 @@ namespace BlazorEcommerce.Server.Services.ProductServices
 			return response;
 		}
 
-		public async Task<ServiceResponse<Product>> GetSingleProductAsync(int productID)
+        public async Task<ServiceResponse<List<Product>>> GetProductsByCategoryAsync(string categoryUrl)
+        {
+			var response = new ServiceResponse<List<Product>>
+			{
+				Data = await _context.Products
+					.Include(p => p.Category)
+					.Where(p => p.Category.Url.ToLower() == categoryUrl.ToLower())
+					.ToListAsync()
+			};
+			return response;
+        }
+
+        public async Task<ServiceResponse<Product>> GetSingleProductAsync(int productID)
 		{
 			var response = new ServiceResponse<Product>();
 			var product = await _context.Products.FindAsync(productID);
@@ -36,5 +48,7 @@ namespace BlazorEcommerce.Server.Services.ProductServices
 			}
 			return response;
 		}
-	}
+
+
+    }
 }
